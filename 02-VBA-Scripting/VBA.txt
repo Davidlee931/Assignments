@@ -1,0 +1,115 @@
+Sub Assignment2()
+
+Dim ws As Worksheet
+Dim YearOpen As Double
+Dim YearClose As Double
+Dim ticker As String
+Dim YearChange As Double
+Dim percent As Double
+Dim Table As Integer
+
+
+For Each ws In ThisWorkbook.Worksheets
+
+    ws.Cells(1, 9).Value = "Ticker"
+    ws.Cells(1, 10).Value = "Yearly Change"
+    ws.Cells(1, 11).Value = "Percent Change"
+    ws.Cells(1, 12).Value = "Total Stock Volume"
+
+    Table = 2
+
+        For i = 2 To ws.UsedRange.Rows.Count
+
+            If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then
+
+                ticker = ws.Cells(i, 1).Value
+                YearOpen = ws.Cells(i, 3).Value
+                YearClose = ws.Cells(i, 6).Value
+
+                YearChange = YearClose - YearOpen
+                percent = (YearClose - YearOpen) / YearClose
+    
+                ws.Cells(Table, 9).Value = ticker
+                ws.Cells(Table, 10).Value = YearChange
+                ws.Cells(Table, 11).Value = percent
+        
+            Table = Table + 1
+ 
+        End If
+        
+    Next i
+        
+        
+Dim Total_Volume As Double
+
+    Table = 2
+    
+        Cells(Table, 12).Value = Cells(Table, 1).Value
+        lastrow = Cells(Rows.Count, 1).End(xlUp).Row
+
+    For i = 2 To lastrow
+
+        If Cells(i, 1).Value = Cells(Table, 12) Then
+     
+            Total_Volume = Total_Volume + Cells(i, 7).Value
+     
+        Else
+     
+            Cells(Table, 12).Value = Total_Volume
+            Total_Volume = Cells(i, 7).Value
+            Table = Table + 1
+            Cells(Table, 12).Value = Cells(i, 1).Value
+     
+        End If
+     
+     Next i
+     
+         Cells(Table, 12).Value = Total_Volume
+
+ws.Columns("K").NumberFormat = "0.00%"
+
+On Error Resume Next
+
+    Dim r As Range
+    Dim green As Long
+    Dim red As Long
+    Dim color As Range
+ 
+
+    Set r = ws.Range("J2", Range("J2").End(xlDown))
+
+    red = r.Cells.Count
+
+    For green = 1 To red
+
+    Set color = r(green)
+    
+    Select Case color
+
+        Case Is >= 0
+
+            With color
+            
+                .Interior.ColorIndex = 4
+
+            End With
+
+        Case Is < 0
+
+            With color
+            
+                .Interior.ColorIndex = 3
+
+            End With
+
+       End Select
+
+    Next green
+
+ 
+
+Next ws
+
+ 
+End Sub
+
